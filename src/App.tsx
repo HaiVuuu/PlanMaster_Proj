@@ -20,7 +20,7 @@ import { WorkspaceScreen } from '@/components/WorkspaceScreen';
 import './index.css'
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
-import { sampleProject } from './data/sampleProject';
+import { sampleProject } from './sampleProject';
 import { setAuthSuccess } from './store/authSlice';
 // Default settings moved here for App.tsx to use
 const DEFAULT_SETTINGS: AppSettings = {
@@ -241,7 +241,7 @@ function App() {
                 <Toast 
                     key={toast.id} 
                     id={toast.id}
-                    message={toast.message} 
+                    message={toast.message}
                     type={toast.type}
                     onDismiss={(id: string) => dispatch(removeToast(id))}
                 />

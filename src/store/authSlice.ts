@@ -27,12 +27,17 @@ const authSlice = createSlice({
       state.status = action.payload ? 'LOGGED_IN' : 'LOGGED_OUT';
       state.error = null; // Reset error on user change
     },
+    setAuthSuccess(state, action: PayloadAction<User>) {
+      state.status = 'LOGGED_IN';
+      state.currentUser = action.payload;
+      state.error = null;
+    },
     setAuthError(state, action: PayloadAction<string | null>) {
       state.error = action.payload;
     },
   },
 });
 
-export const { setAuthStatus, setUser, setAuthError } = authSlice.actions;
+export const { setAuthStatus, setUser, setAuthSuccess, setAuthError } = authSlice.actions;
 
 export default authSlice.reducer;
