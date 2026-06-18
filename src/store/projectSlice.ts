@@ -113,9 +113,12 @@ const projectSlice = createSlice({
   },
 });
 
-export const { setProjects, setCurrentProject, updateProjectInList, updateTasksInCurrentProject, updateTeamInCurrentProject } = projectSlice.actions;
 export const {
-  // Export new actions
+  setProjects,
+  setCurrentProject,
+  updateProjectInList,
+  updateTasksInCurrentProject,
+  updateTeamInCurrentProject,
   updateCurrentProjectDetails,
   addTaskToCurrentProject,
   updateTaskInCurrentProjectOptimistic,
@@ -125,7 +128,6 @@ export const {
   addPaymentLogToTaskInCurrentProject,
   addStakeholderToCurrentProject,
   removeStakeholderFromCurrentProject,
-  addReportToCurrentProject,
 } = projectSlice.actions;
 
 export default projectSlice.reducer;

@@ -382,7 +382,6 @@ export const useAppHandlers = (
 
   // --- USER MANAGEMENT HANDLERS ---
   const handleAssignUserToProject = useCallback(async (userToAssign: User) => {
-    if (!currentProject || !currentUser || currentUser.role !== UserRole.ADMIN) {
     if (isGuest || !currentProject || !currentUser || currentUser.role !== UserRole.ADMIN) {
         dispatch(addToast({ message: "Bạn không có quyền thực hiện thao tác này.", type: 'error' }));
         return;
@@ -409,7 +408,6 @@ export const useAppHandlers = (
   }, [currentProject, currentUser, dispatch, setSystemPendingUsers, isGuest]);
 
   const handleRejectUser = useCallback(async (userId: string) => {
-    if (!currentUser || (!currentUser.role.toString().startsWith('Quản trị') && currentUser.role !== UserRole.ADMIN)) {
     if (isGuest || !currentUser || (!currentUser.role.toString().startsWith('Quản trị') && currentUser.role !== UserRole.ADMIN)) {
         dispatch(addToast({ message: "Bạn không có quyền từ chối nhân sự.", type: 'error' }));
         return;
