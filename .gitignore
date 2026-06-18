@@ -13,3 +13,5 @@
 # Docker data
 /mongo-data
 /firebase-data
+
+/scripts/

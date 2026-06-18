@@ -56,26 +56,36 @@ describe('VietnameseInput', () => {
     expect(input).toHaveValue('xáy');
 
     // 5. End composition
-    fireEvent.compositionEnd(input);
+    fireEvent.compositionEnd(input, { data: 'xáy' });
+    // Simulate the final 'input' event that the browser sends after composition.
+    fireEvent.change(input, { target: { value: 'xáy' } });
     // After compositionEnd, the final value should be correctly set and propagated
     expect(input).toHaveValue('xáy');
   });
 
   it('should not trigger onChange during composition, only at compositionEnd', () => {
-    const handleChange = vi.fn();
-    render(<VietnameseInput value="" onChange={handleChange} data-testid="vietnamese-input" />);
+    const onChangeSpy = vi.fn();
+    const TestWrapper = () => {
+      const [value, setValue] = useState('');
+      const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setValue(e.target.value);
+        onChangeSpy(e);
+      };
+      return <VietnameseInput value={value} onChange={handleChange} data-testid="vietnamese-input" />;
+    };
+    render(<TestWrapper />);
     const input = screen.getByTestId('vietnamese-input');
 
     fireEvent.change(input, { target: { value: 'x' } });
-    expect(handleChange).toHaveBeenCalledTimes(1);
+    expect(onChangeSpy).toHaveBeenCalledTimes(1);
 
     fireEvent.compositionStart(input);
     fireEvent.change(input, { target: { value: 'xa' } });
-    expect(handleChange).toHaveBeenCalledTimes(1); // Should NOT be called during composition
+    expect(onChangeSpy).toHaveBeenCalledTimes(1); // Should NOT be called during composition
 
     fireEvent.compositionEnd(input);
     fireEvent.change(input, { target: { value: 'xá' } }); // Simulate final value after composition
-    expect(handleChange).toHaveBeenCalledTimes(2); // Should be called once at the end
-    expect(handleChange).toHaveBeenCalledWith(expect.objectContaining({ target: expect.objectContaining({ value: 'xá' }) }));
+    expect(onChangeSpy).toHaveBeenCalledTimes(2); // Should be called once at the end
+    expect(onChangeSpy).toHaveBeenLastCalledWith(expect.objectContaining({ target: expect.objectContaining({ value: 'xá' }) }));
   });
 });
