@@ -1,12 +1,12 @@
 # Tên của quy trình CI/CD, sẽ hiển thị trên tab "Actions" của GitHub
-name: CI - Build and Test
+name: CI/CD - Build, Test, and Deploy
 
 # Quy trình này sẽ được kích hoạt trong hai trường hợp:
 # 1. Khi có code được push trực tiếp lên nhánh `main`.
 # 2. Khi một Pull Request được mở hoặc cập nhật nhắm vào nhánh `main`.
 on:
   push:
-    branches: [ main ] # Bạn có thể đổi thành 'master' nếu đó là nhánh chính của bạn
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -15,8 +15,9 @@ on:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
-# Job: Build và Test ứng dụng
+# Định nghĩa các jobs sẽ chạy
 jobs:
+  # Job 1: Build và Test ứng dụng
   build_and_test:
     # Chạy trên một máy ảo Ubuntu phiên bản mới nhất
     runs-on: ubuntu-latest
@@ -55,3 +56,35 @@ jobs:
       # 5. Build dự án nếu test thành công
       - name: Build project
         run: npm run build # Vẫn build để đảm bảo không có lỗi
+
+  # Job 2: Deploy ứng dụng lên Firebase Hosting
+  deploy:
+    # Job này cần job 'build_and_test' chạy thành công trước
+    needs: build_and_test
+    # Chỉ chạy job này khi có push lên nhánh `main`, không chạy cho Pull Request
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          channelId: live
+          projectId: taskmanager-b6ec9
