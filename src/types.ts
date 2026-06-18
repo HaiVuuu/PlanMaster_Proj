@@ -20,7 +20,8 @@ export enum UserRole {
   QTNT = 'Quản trị Nhà thầu (QTNT)',
   NVNT = 'Nhân viên Nhà thầu (NVNT)',
   QCNT = 'QC Nhà thầu (QCNT)',
-  QSNT = 'QS Nhà thầu (QSNT)'
+  QSNT = 'QS Nhà thầu (QSNT)',
+  GUEST = 'Khách (Guest)'
 }
 
 export enum UserStatus {
@@ -345,6 +346,17 @@ export const PERMISSION_CONFIG: Record<UserRole, Record<ModuleName, ModuleRights
     EVALUATION: { view: true, edit: false },
     PROFILE: { view: true, edit: true },
   },
+  [UserRole.GUEST]: {
+    INFO: { view: true, edit: false },
+    DASHBOARD: { view: true, edit: false },
+    TASKS: { view: true, edit: false },
+    COST: { view: true, edit: false },
+    USERS: { view: true, edit: false },
+    STAKEHOLDERS: { view: true, edit: false },
+    SETTINGS: { view: true, edit: false },
+    EVALUATION: { view: true, edit: false },
+    PROFILE: { view: true, edit: false },
+  },
   // Nhà thầu
   [UserRole.QTNT]: {
     INFO: { view: true, edit: false },
@@ -405,5 +417,6 @@ export const ROLE_HIERARCHY: Record<UserRole, number> = {
   [UserRole.NVCDT]: 30,
   [UserRole.NVTVGS]: 20,
   [UserRole.NVTVTK]: 10,
-  [UserRole.NVNT]: 0,
+  [UserRole.NVNT]: 5,
+  [UserRole.GUEST]: 0,
 };

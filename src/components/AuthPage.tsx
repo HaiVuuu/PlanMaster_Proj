@@ -5,6 +5,8 @@ import { useAuthForms } from '@/hooks/useAuthForms';
 import VietnameseInput from '@/components/VietnameseInput';
 import { useDispatch } from 'react-redux';
 import { setAuthError } from '@/store/authSlice';
+import { auth } from '@/firebase';
+import { signInAnonymously } from 'firebase/auth';
 
 interface AuthPageProps {
   authError: string | null;
@@ -18,8 +20,19 @@ export const AuthPage: React.FC<AuthPageProps> = ({ authError }) => {
     registerForm, setRegisterForm,
     registerSuccess, setRegisterSuccess,
     isAuthLoading,
-    handleLogin, handleRegister, handleForgotPassword
+    handleLogin, handleRegister, handleForgotPassword,
   } = useAuthForms();
+
+  const handleGuestLogin = async () => {
+    try {
+      // This will trigger the onAuthStateChanged listener in App.tsx
+      // which will then handle setting the guest state in Redux.
+      await signInAnonymously(auth);
+    } catch (error) {
+      console.error("Guest login failed:", error);
+      dispatch(setAuthError("Đăng nhập khách thất bại. Vui lòng thử lại."));
+    }
+  };
 
   return (
     <div className="flex-1 min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 p-4 text-gray-800 dark:text-gray-200">
@@ -62,6 +75,12 @@ export const AuthPage: React.FC<AuthPageProps> = ({ authError }) => {
                 <button type="button" onClick={handleForgotPassword} className="text-xs text-gray-500 dark:text-gray-400 hover:underline">Quên mật khẩu?</button>
               </div>
             </form>
+
+            <div className="relative flex items-center"><div className="flex-grow border-t dark:border-gray-700"></div><span className="flex-shrink mx-4 text-xs text-gray-400 dark:text-gray-500">hoặc</span><div className="flex-grow border-t dark:border-gray-700"></div></div>
+
+            <Button variant="secondary" onClick={handleGuestLogin} className="w-full justify-center py-3">
+              Trải nghiệm với tư cách khách
+            </Button>
           </div>
         ) : (
           <form onSubmit={handleRegister} className="space-y-4">

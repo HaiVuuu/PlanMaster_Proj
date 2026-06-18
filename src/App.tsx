@@ -18,6 +18,10 @@ import { AuthPage } from '@/components/AuthPage';
 import { ProjectSelectScreen } from '@/components/ProjectSelectScreen';
 import { WorkspaceScreen } from '@/components/WorkspaceScreen';
 import './index.css'
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './firebase';
+import { sampleProject } from './data/sampleProject';
+import { setAuthSuccess } from './store/authSlice';
 // Default settings moved here for App.tsx to use
 const DEFAULT_SETTINGS: AppSettings = {
   theme: 'light',
@@ -35,7 +39,7 @@ function App() {
   const { status:authStatus, currentUser, error:authError } = useSelector((state: RootState) => state.auth);
   const { projects, currentProject } = useSelector((state: RootState) => state.projects);
   const settings = useSelector((state: RootState) => state.settings);
-  const toasts = useSelector((state: RootState) => state.ui.toasts); // Type is { id: string, message: string, type: "success" | "error" | "info" | "warning" }[]
+  const toasts = useSelector((state: RootState) => state.ui.toasts);
 
   const isOnline = useOnlineStatus();
   useAuthListener();
@@ -73,6 +77,33 @@ function App() {
     setConfirmMessage,
     setSystemPendingUsers
   );
+
+  // --- GUEST MODE HANDLER ---
+  // This effect runs alongside useAuthListener. It specifically looks for
+  // anonymous users and injects a temporary "guest" session into the Redux store.
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user && user.isAnonymous) {
+        const guestUser: User = {
+            id: user.uid,
+            role: UserRole.GUEST,
+            fullname: 'Khách Tham Quan',
+            phone: '0000000000',
+            avatar: `https://i.pravatar.cc/150?u=${user.uid}`,
+            username: 'guest',
+            cccd: '',
+            email: '',
+            status: UserStatus.ACTIVE
+        };
+        // Dispatch actions to set the guest session in Redux
+        // This will make the rest of the app behave as if a "GUEST" user is logged in.
+        dispatch(setAuthSuccess(guestUser));
+        dispatch(setCurrentProject(sampleProject));
+        setView('WORKSPACE');
+      }
+    });
+    return () => unsubscribe();
+  }, [dispatch]);
 
   // Close notification dropdown when clicking outside
   useEffect(() => {
@@ -142,7 +173,7 @@ function App() {
   } else if (!currentUser) {
     content = <AuthPage authError={authError} />;
   } else if (view === 'PROJECT_SELECT') {
-    content = (
+    content = ( // For guest users, currentProject is already set, so this view is skipped.
       <ProjectSelectScreen
         currentUser={currentUser}
         projects={projects}
@@ -155,7 +186,7 @@ function App() {
     content = (
       <WorkspaceScreen
         currentUser={currentUser}
-        currentProject={currentProject}
+        currentProject={currentProject} // For guests, this will be the sampleProject
         settings={settings}
         isOnline={isOnline}
         activeTab={activeTab}
@@ -211,7 +242,7 @@ function App() {
                     key={toast.id} 
                     id={toast.id}
                     message={toast.message} 
-                    type={toast.type} 
+                    type={toast.type}
                     onDismiss={(id: string) => dispatch(removeToast(id))}
                 />
             ))}
