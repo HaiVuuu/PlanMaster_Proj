@@ -2,9 +2,8 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
-import { User, AppSettings } from '../types';
+import { User, AppSettings, UserRole } from '../types';
 import { setSettings } from '../store/settingsSlice';
-import { setCurrentProject, setProjects } from '../store/projectSlice';
 
 const DEFAULT_SETTINGS: AppSettings = {
   theme: 'light',

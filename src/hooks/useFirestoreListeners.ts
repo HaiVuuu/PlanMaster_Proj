@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from '../firebase';
-import { setProjects, updateTasksInCurrentProject, updateTeamInCurrentProject } from '../store/projectSlice';
+import { setProjects, setCurrentProject, updateTasksInCurrentProject, updateTeamInCurrentProject } from '../store/projectSlice';
 import { Project, User, UserRole, UserStatus, Task } from '../types';
 
 /**
