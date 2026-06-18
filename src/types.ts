@@ -347,15 +347,15 @@ export const PERMISSION_CONFIG: Record<UserRole, Record<ModuleName, ModuleRights
     PROFILE: { view: true, edit: true },
   },
   [UserRole.GUEST]: {
-    INFO: { view: true, edit: false },
+    INFO: { view: true, edit: true },
     DASHBOARD: { view: true, edit: false },
-    TASKS: { view: true, edit: false },
-    COST: { view: true, edit: false },
+    TASKS: { view: true, edit: true },
+    COST: { view: true, edit: true },
     USERS: { view: true, edit: false },
-    STAKEHOLDERS: { view: true, edit: false },
-    SETTINGS: { view: true, edit: false },
+    STAKEHOLDERS: { view: true, edit: true },
+    SETTINGS: { view: true, edit: true },
     EVALUATION: { view: true, edit: false },
-    PROFILE: { view: true, edit: false },
+    PROFILE: { view: true, edit: false }, // Keep profile read-only for guests
   },
   // Nhà thầu
   [UserRole.QTNT]: {
