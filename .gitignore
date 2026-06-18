@@ -1,0 +1,15 @@
+# Dependencies
+/node_modules
+
+# Build output
+/dist
+/backend/dist
+
+# Environment variables
+.env
+*.env
+.env.*
+
+# Docker data
+/mongo-data
+/firebase-data

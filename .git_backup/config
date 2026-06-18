@@ -1,0 +1,23 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	symlinks = false
+	ignorecase = true
+[branch "refacted"]
+	github-pr-base-branch = "HaiVuuu#planmaster-test#main"
+	github-pr-base-branch = "HaiVuuu#planmaster-test#Before_refactor"
+[branch "refactor/component-cleanup"]
+	github-pr-base-branch = "HaiVuuu#planmaster-test#refacted"
+	vscode-merge-base = origin/refacted
+[branch "main"]
+	vscode-merge-base = origin/main
+[branch "feature/update-to-deploy"]
+	vscode-merge-base = origin/main
+[branch "feature/clean-codebase"]
+	github-pr-base-branch = "HaiVuuu#planmaster-test#main"
+	vscode-merge-base = origin/main
+[remote "origin"]
+	url = https://github.com/HaiVuuu/PlanMaster_Proj.git
+	fetch = +refs/heads/*:refs/remotes/origin/*

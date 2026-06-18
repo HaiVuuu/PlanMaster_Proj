@@ -1,0 +1,7 @@
+0000000000000000000000000000000000000000 ee71ef3b0f22b5011eaab4fa0741d769207ef97e Nguyen Dinh Vu Hai <nguyendinhvuhai1234@gmail.com> 1769609717 +0700	commit (initial): Initial commit: Setup project structure and core features
+ee71ef3b0f22b5011eaab4fa0741d769207ef97e ee71ef3b0f22b5011eaab4fa0741d769207ef97e Nguyen Dinh Vu Hai <nguyendinhvuhai1234@gmail.com> 1769609841 +0700	Branch: renamed refs/heads/master to refs/heads/main
+ee71ef3b0f22b5011eaab4fa0741d769207ef97e 1c1aa531f94c56cc3a1010b97f151543039b6f56 Nguyen Dinh Vu Hai <nguyendinhvuhai1234@gmail.com> 1770129516 +0700	commit: safe new version
+1c1aa531f94c56cc3a1010b97f151543039b6f56 0a2f9a187488522c7aaf27eaa83d9086bdb9a0f3 Nguyen Dinh Vu Hai <nguyendinhvuhai1234@gmail.com> 1771686114 +0700	commit: Before refactoring
+0a2f9a187488522c7aaf27eaa83d9086bdb9a0f3 0a2f9a187488522c7aaf27eaa83d9086bdb9a0f3 Nguyen Dinh Vu Hai <nguyendinhvuhai1234@gmail.com> 1771686154 +0700	Branch: renamed refs/heads/main to refs/heads/Before_refactor
+0a2f9a187488522c7aaf27eaa83d9086bdb9a0f3 f6f7991f26cf54ee2bcc8b67a2e8b5cc64eb067d Nguyen Dinh Vu Hai <nguyendinhvuhai1234@gmail.com> 1773844380 +0700	commit: upd
+f6f7991f26cf54ee2bcc8b67a2e8b5cc64eb067d f6f7991f26cf54ee2bcc8b67a2e8b5cc64eb067d Nguyen Dinh Vu Hai <nguyendinhvuhai1234@gmail.com> 1773844423 +0700	Branch: renamed refs/heads/Before_refactor to refs/heads/refacted

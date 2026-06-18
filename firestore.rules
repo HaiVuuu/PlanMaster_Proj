@@ -1,0 +1,89 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper function to get user data for cleaner rules
+    function getUserData(uid) {
+      return get(/databases/$(database)/documents/users/$(uid)).data;
+    }
+
+    // Helper function to get role rank, mirroring the logic in the app
+    function getRoleRank(role) {
+      let ranks = {
+        'System Admin': 100,
+        'Quản trị CĐT (QTCDT)': 90,
+        'Quản trị TVGS (QTTVGS)': 80,
+        'Quản trị Nhà thầu (QTNT)': 70,
+        'Quản trị TVTK (QTTVTK)': 60,
+        'QS Chủ đầu tư (QSCDT)': 50,
+        'QS TVGS (QSTVGS)': 40,
+        'QS Nhà thầu (QSNT)': 30,
+        'QC Nhà thầu (QCNT)': 20,
+        'Nhân viên CĐT (NVCDT)': 10,
+        'Nhân viên TVGS (NVTVGS)': 10,
+        'Nhân viên TVTK (NVTVTK)': 10,
+        'Nhân viên Nhà thầu (NVNT)': 10
+      };
+      // Return 0 for unknown roles to be safe
+      return role in ranks ? ranks[role] : 0;
+    }
+
+    // --- Private User Details Collection ---
+    match /user_private_details/{userId} {
+      allow read, write: if request.auth.uid == userId;
+    }
+
+    // --- Users Collection (Public Profiles) ---
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth.uid == userId;
+      allow delete: if getUserData(request.auth.uid).role == 'System Admin';
+
+      // --- FINAL, HIERARCHY-AWARE UPDATE RULE ---
+      allow update: if request.auth != null && (
+        // 1. User can update their own profile (e.g. lastActiveAt), but cannot change their role or status.
+        (request.auth.uid == userId && !request.writeFields.hasAny(['role', 'status'])) 
+        || 
+        // 2. An Admin can update any user, but is blocked from creating another Admin or changing another Admin's role.
+        (
+            getUserData(request.auth.uid).role == 'System Admin'
+            &&
+            // Prevent Admin from promoting someone else to System Admin
+            !(userId != request.auth.uid && request.resource.data.role == 'System Admin')
+            &&
+            // Prevent Admin from changing another System Admin's role
+            !(userId != request.auth.uid && resource.data.role == 'System Admin' && request.resource.data.role != resource.data.role)
+        )
+        ||
+        // 3. A Manager can update a user with a strictly lower rank.
+        (
+            // The user must be a manager
+            getUserData(request.auth.uid).role.matches('Quản trị.*')
+            &&
+            // The current user's rank must be strictly higher than the target user's current rank
+            getRoleRank(getUserData(request.auth.uid).role) > getRoleRank(resource.data.role)
+            &&
+            // If the role is being changed, the new role must also be of a rank strictly lower than the manager's rank.
+            (request.resource.data.role == resource.data.role || getRoleRank(request.resource.data.role) < getRoleRank(getUserData(request.auth.uid).role))
+        )
+      );
+    }
+
+    // --- Projects Collection ---
+    match /projects/{projectId} {
+      allow read, update: if request.auth.uid in resource.data.memberUids;
+      // Corrected role matching for project creation
+      allow create: if getUserData(request.auth.uid).role == 'System Admin' || getUserData(request.auth.uid).role.matches('Quản trị.*');
+      allow delete: if getUserData(request.auth.uid).role == 'System Admin';
+
+      match /tasks/{taskId} {
+        allow read, write: if request.auth.uid in get(/databases/$(database)/documents/projects/$(projectId)).data.memberUids;
+      }
+    }
+
+    // --- User Settings ---
+    match /userSettings/{userId} {
+      allow read, write: if request.auth.uid == userId;
+    }
+  }
+}

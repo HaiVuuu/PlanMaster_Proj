@@ -1,0 +1,35 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PlanMaster VN - Quản lý Dự án</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f3f4f6;
+      }
+      /* Custom scrollbar for tables */
+      .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+      }
+      .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+      }
+      /* Force full width to override any rogue styles */
+      html, body, #root {
+        width: 100% !important; /* Sử dụng 100% thay cho 100vw để tránh lỗi tràn lề ngang khi có thanh cuộn dọc */
+        min-width: 100% !important;
+        overflow-x: hidden; /* Thêm thuộc tính này để đảm bảo không có thanh cuộn ngang không mong muốn */
+      }
+    </style>
+</head>
+  <body>
+    <div id="root"></div>
+    <!-- Main Entry Point -->
+    <script type="module" src="/src/index.tsx"></script>
+  </body>
+</html>

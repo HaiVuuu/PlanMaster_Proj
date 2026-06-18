@@ -1,0 +1,57 @@
+# Tên của quy trình CI/CD, sẽ hiển thị trên tab "Actions" của GitHub
+name: CI - Build and Test
+
+# Quy trình này sẽ được kích hoạt trong hai trường hợp:
+# 1. Khi có code được push trực tiếp lên nhánh `main`.
+# 2. Khi một Pull Request được mở hoặc cập nhật nhắm vào nhánh `main`.
+on:
+  push:
+    branches: [ main ] # Bạn có thể đổi thành 'master' nếu đó là nhánh chính của bạn
+  pull_request:
+    branches: [ main ]
+
+# Thêm biến môi trường này ở cấp cao nhất để áp dụng cho tất cả các job.
+# Nó buộc các action chạy trên Node.js 24, đảm bảo tương thích trong tương lai.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+# Job: Build và Test ứng dụng
+jobs:
+  build_and_test:
+    # Chạy trên một máy ảo Ubuntu phiên bản mới nhất
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Lấy code từ repository về máy ảo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Cài đặt môi trường Node.js (phiên bản 20.x)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm' # Bật cache để tăng tốc độ cài đặt ở những lần chạy sau
+
+      # 3. Cài đặt các dependencies của dự án
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Chạy các bài test. Cờ '--run' đảm bảo Vitest chạy 1 lần rồi thoát.
+      # Nếu bước này thất bại, toàn bộ quy trình sẽ dừng lại.
+      - name: Run tests
+        run: npm test -- --run
+        env:
+          # Cung cấp các biến môi trường giả để Firebase SDK có thể khởi tạo
+          # mà không bị lỗi trong môi trường CI. Các giá trị này không cần
+          # phải là thật vì các hàm tương tác với Firebase đã được mock trong test.
+          VITE_API_KEY: "test-key"
+          VITE_AUTH_DOMAIN: "test.firebaseapp.com"
+          VITE_PROJECT_ID: "test-project"
+          VITE_STORAGE_BUCKET: "test.appspot.com"
+          VITE_MESSAGING_SENDER_ID: "12345"
+          VITE_APP_ID: "test-app-id"
+
+      # 5. Build dự án nếu test thành công
+      - name: Build project
+        run: npm run build # Vẫn build để đảm bảo không có lỗi

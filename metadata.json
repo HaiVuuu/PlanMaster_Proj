@@ -1,0 +1,8 @@
+{
+  "name": "PlanMasterVN9",
+  "description": "quy định import/export, add tick khẩn cấp, in nhật ký",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ]
+}

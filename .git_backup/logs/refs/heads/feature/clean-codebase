@@ -1,0 +1,4 @@
+0000000000000000000000000000000000000000 8c033653414feb9a48477ea80f452b8712152236 Nguyen Dinh Vu Hai <nguyendinhvuhai1234@gmail.com> 1779202770 +0700	branch: Created from main
+8c033653414feb9a48477ea80f452b8712152236 e470b8dbe46cc58af34f7aae815540013b7300f4 Nguyen Dinh Vu Hai <nguyendinhvuhai1234@gmail.com> 1781768870 +0700	commit: Initial commit: Setup project and CI workflow
+e470b8dbe46cc58af34f7aae815540013b7300f4 8c033653414feb9a48477ea80f452b8712152236 Nguyen Dinh Vu Hai <nguyendinhvuhai1234@gmail.com> 1781769480 +0700	reset: moving to HEAD~1
+8c033653414feb9a48477ea80f452b8712152236 32b46897222ec3210d7571e0ac99abadd052fa32 Nguyen Dinh Vu Hai <nguyendinhvuhai1234@gmail.com> 1781769564 +0700	commit: Fix commit
