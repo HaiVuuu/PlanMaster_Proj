@@ -17,10 +17,17 @@ export const useFirestoreListeners = (currentUser: User | null, currentProject: 
   useEffect(() => {
     // --- KEY FIX ---
     // If there is no user or the user is a guest, do not set up any listeners.
-    if (!currentUser || currentUser.role === UserRole.GUEST) {
-      // Clear any existing listeners' data if necessary
+    if (!currentUser) {
+      // User is logged out. Clear all project data.
       dispatch(setProjects([]));
+      dispatch(setCurrentProject(null));
       setSystemPendingUsers([]);
+      return;
+    }
+
+    if (currentUser.role === UserRole.GUEST) {
+      // Guest is logged in. Don't set up listeners, but also don't clear the
+      // currentProject, which should be the sample project.
       return;
     }
 

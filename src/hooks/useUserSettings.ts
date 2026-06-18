@@ -13,31 +13,32 @@ const DEFAULT_SETTINGS: AppSettings = {
   dateFormat: 'DD/MM/YYYY'
 };
 
-export const useUserSettings = (currentUser: User | null, setView: (view: 'PROJECT_SELECT' | 'WORKSPACE') => void) => {
+export const useUserSettings = (currentUser: User | null) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchSettings = async () => {
       if (currentUser) {
+        // For guests, just use default settings without a DB call.
+        if (currentUser.role === UserRole.GUEST) {
+            dispatch(setSettings(DEFAULT_SETTINGS));
+            return;
+        }
         const settingsDocRef = doc(db, 'userSettings', currentUser.id);
         const settingsDocSnap = await getDoc(settingsDocRef);
         const loadedSettings = settingsDocSnap.exists() ? (settingsDocSnap.data() as AppSettings) : DEFAULT_SETTINGS;
         
         document.documentElement.classList.toggle('dark', loadedSettings.theme === 'dark');
         localStorage.setItem('planmaster-theme', loadedSettings.theme);
-
         dispatch(setSettings(loadedSettings));
-        setView('PROJECT_SELECT');
       } else {
+        // On logout, reset theme and settings
         document.documentElement.classList.remove('dark');
         try { localStorage.removeItem('planmaster-theme'); } catch (e) {}
-        dispatch(setCurrentProject(null));
-        dispatch(setProjects([]));
         dispatch(setSettings(DEFAULT_SETTINGS));
-        setView('PROJECT_SELECT');
       }
     };
 
     fetchSettings();
-  }, [currentUser, dispatch, setView]);
+  }, [currentUser, dispatch]);
 };

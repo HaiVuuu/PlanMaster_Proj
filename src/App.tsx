@@ -45,7 +45,7 @@ function App() {
   useAuthListener();
 
   // --- CUSTOM HOOKS FOR LOGIC SEPARATION ---
-  useUserSettings(currentUser, setView);
+  useUserSettings(currentUser);
   const { systemPendingUsers, setSystemPendingUsers } = useFirestoreListeners(currentUser, currentProject);
 
   // State for WorkspaceScreen
