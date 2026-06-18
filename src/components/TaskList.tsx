@@ -228,6 +228,7 @@ export const TaskList: React.FC<Props> = ({
   const isNVCDT = currentUser.role === UserRole.NVCDT;
   const isAdmin = currentUser.role === UserRole.ADMIN;
   const isTVGS = currentUser.role === UserRole.NVTVGS || currentUser.role === UserRole.QTTVGS;
+  const isGuest = currentUser.role === UserRole.GUEST;
   const isManager = [UserRole.QTCDT, UserRole.QTNT, UserRole.QTTVTK, UserRole.QTTVGS, UserRole.ADMIN].includes(currentUser.role);
   const canEdit = PERMISSION_CONFIG[currentUser.role].TASKS.edit;
   const isViewer = !canEdit;
@@ -266,7 +267,7 @@ export const TaskList: React.FC<Props> = ({
   const filteredTasks = useMemo(() => {
     return project.tasks
       .filter((t: Task) => { // 1. Role-based visibility filter
-        if (isManager || isViewer) return true;
+        if (isManager || isViewer || isGuest) return true;
         return t.assignees && t.assignees.includes(currentUser.id);
       })
       .filter((t: Task) => { // 2. Status filter
@@ -281,7 +282,7 @@ export const TaskList: React.FC<Props> = ({
           t.code.toLowerCase().includes(lowerCaseSearch)
         );
       });
-  }, [project.tasks, isManager, isViewer, currentUser.id, statusFilter, searchTerm]);
+  }, [project.tasks, isManager, isViewer, isGuest, currentUser.id, statusFilter, searchTerm]);
 
   const getUsersByRole = useCallback((roles: UserRole[]) => {
       return project.team.filter((u: User) => roles.includes(u.role)).map((u: User) => u.id);
